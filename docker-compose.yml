@@ -1,0 +1,25 @@
+services:
+
+  frontend:
+    container_name: frontend
+    build: 
+      context: .
+      dockerfile: Dockerfile.Frontend
+    command: sh -c "yarn dev"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 3000:3000
+
+  backend:
+    container_name: backend
+    build: 
+      context: .
+      dockerfile: Dockerfile.Backend
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "cd messaging && 
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000

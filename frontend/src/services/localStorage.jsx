@@ -2,7 +2,7 @@ export default class Storage {
 
     static storeTokens(data){
         localStorage.setItem("@accessToken", data.access)
-        localStorage.setItem("@refreshToken", data?.refresh)
+        localStorage.setItem("@refreshToken", data.refresh)
     }
 
     static getAccessToken(){
@@ -11,10 +11,6 @@ export default class Storage {
 
     static getRefreshToken(){
         return localStorage.getItem("@refreshToken")
-    }
-
-    static isRefreshTokenPresent(){
-        return Storage.getRefreshToken() !== "undefined"
     }
 
     static updateAccessToken(newRefreshToken){

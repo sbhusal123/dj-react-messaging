@@ -18,7 +18,6 @@ export default function useTokenCheck(){
   const validateToken = useCallback(() => {
       const accessToken = Storage.getAccessToken();
       const refreshToken = Storage.getRefreshToken();
-      const isRefreshTokenPresent = Storage.isRefreshTokenPresent();
 
       if(!accessToken){
           navigate('/')
@@ -31,27 +30,19 @@ export default function useTokenCheck(){
           navigate('/chat')
           setLoading(false)
       }).catch(err => {
-          if(isRefreshTokenPresent){
-              AuthService.refreshToken(refreshToken).then(({data}) => {
-                  Storage.updateAccessToken(data.access);
-                  setIsAuthenticated(true);
-                  setLoading(false)
-                  navigate('/chat')
-              }).catch(err => {
-                  setIsAuthenticated(false);
-                  setLoading(false)
-                  Storage.removeTokenData()
-                  toastError("Logged Out")
-                  navigate('/')
-              })
-          } else {
-            setIsAuthenticated(false);
-            setLoading(false)
-            Storage.removeTokenData()
-            toastError("Logged Out")
-            navigate('/')
-          }
-      })
+          AuthService.refreshToken(refreshToken).then(({data}) => {
+              Storage.updateAccessToken(data.access);
+              setIsAuthenticated(true);
+              setLoading(false)
+              navigate('/chat')
+          }).catch(err => {
+              setIsAuthenticated(false);
+              setLoading(false)
+              Storage.removeTokenData()
+              toastError("Logged Out")
+              navigate('/')
+          })
+        })
   }, [])
 
   useEffect(() => {

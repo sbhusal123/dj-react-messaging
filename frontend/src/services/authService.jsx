@@ -1,12 +1,14 @@
+import { data } from "autoprefixer"
 import { api } from "./api"
 
 export default class AuthService {
 
     // returns refresh and access token
-    static authLogin(username, password){
+    static authLogin(username, password, remember){
         return api.post('/token/', {
             'username': username,
-            'password': password
+            'password': password,
+            'remember_me': remember
         })
     }
 
@@ -18,10 +20,16 @@ export default class AuthService {
     }
 
     // get a new acces acess token with refresh token
-    static async refreshToken(token){
+    static refreshToken(token){
         return api.post('/token/refresh/', {
             'refresh': token
         })
-    }    
+    }
+
+    static authLogout(refreshToken){
+        return api.post('/logout/', {
+            "refresh": refreshToken
+        })
+    }
     
 }

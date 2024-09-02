@@ -21,15 +21,14 @@ const Login = () => {
   const [remember, setRemember] = useState(false)
 
   const handleClick = () => {
-      AuthService.authLogin(username, password).then(resp => {
+      if(username === "" || password === "") {
+        toastInfo("Username and password cannot be empty.")
+        return
+      }
+      AuthService.authLogin(username, password, remember).then(resp => {
           if(resp.status === 200){
               const data = resp.data
-              if(remember){
-                  Storage.storeTokens(data)
-              } else {
-                  delete data.refresh
-                  Storage.storeTokens(data)
-              }
+              Storage.storeTokens(data)
               toastInfo("Logged In")
               navigate('/chat')
           }

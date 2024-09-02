@@ -1,7 +1,29 @@
-export default function App() {
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ChatRoom from './pages/ChatRoom';
+
+import PrivateRoutes from './utils/PrivateRoutes';
+
+import { ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
+
+
+const MainRoutes = () => {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
-}
+    <>
+      <ToastContainer draggable autoClose/>
+      <BrowserRouter>
+          <Routes>
+            <Route path="" element={<Login />} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="/chat" element={<PrivateRoutes Component={ChatRoom} />} />
+          </Routes>
+      </BrowserRouter>
+    </>
+  );
+};
+
+export default MainRoutes;

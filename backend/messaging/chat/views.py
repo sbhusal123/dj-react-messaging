@@ -1,9 +1,19 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-from rest_framework import status
-from django.utils import timezone
 from datetime import timedelta
+
+from rest_framework import mixins
+from rest_framework import viewsets
+
+from .serializers import ChatMessageSerializer
+
+from .models import ChatMessages
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from rest_framework.permissions import IsAuthenticated
+
+from .permissions import IsOwnerOrReadOnly
 
 class RememberMeTokenView(TokenObtainPairView):
 
@@ -21,3 +31,17 @@ class RememberMeTokenView(TokenObtainPairView):
                 
                 response.data['refresh'] = str(refresh)
         return response
+
+
+class ChatMessageViewSet(viewsets.ModelViewSet):
+    serializer_class = ChatMessageSerializer
+
+    queryset = ChatMessages.objects.all()
+
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)

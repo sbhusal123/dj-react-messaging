@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthService from "../services/authService";
-import Storage from "../services/localStorage";
+import Storage from "../services/Storage";
 
 import useToast from "./useToast";
 
@@ -17,7 +17,6 @@ export default function useTokenCheck(){
 
   const validateToken = useCallback(() => {
       const accessToken = Storage.getAccessToken();
-      const refreshToken = Storage.getRefreshToken();
 
       if(!accessToken){
           navigate('/')
@@ -30,19 +29,9 @@ export default function useTokenCheck(){
           navigate('/chat')
           setLoading(false)
       }).catch(err => {
-          AuthService.refreshToken(refreshToken).then(({data}) => {
-              Storage.updateAccessToken(data.access);
-              setIsAuthenticated(true);
-              setLoading(false)
-              navigate('/chat')
-          }).catch(err => {
-              setIsAuthenticated(false);
-              setLoading(false)
-              Storage.removeTokenData()
-              toastError("Logged Out")
-              navigate('/')
-          })
-        })
+          console.log("errror", err)
+      })
+
   }, [])
 
   useEffect(() => {

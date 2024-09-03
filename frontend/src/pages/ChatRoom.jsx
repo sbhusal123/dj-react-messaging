@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-import Storage from '../services/localStorage'
+import Storage from '../services/Storage'
 import useToast from "../hooks/useToast";
 import AuthService from "../services/authService";
+
+const WS_URL = "ws://localhost:8000/ws/chat/"
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -16,6 +18,23 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const { toastInfo, toastError } = useToast()
+
+  const [accessToken, setAccessToken] = useState(() => {
+    Storage.getAccessToken()
+  })
+
+  const [refreshToken, setRefreshToken] = useState(() => {
+    Storage.getRefreshToken()
+  })
+
+  useEffect(() => {
+    // const socket = new ReconnectingWebSocket(WS_URL + `?token=${accessToken}`)
+    const socket = new WebSocket(WS_URL + `?token=${accessToken}`)
+
+    socket.addEventListener('open', () => {
+      console.log("Connection Established")
+    })
+  }, [])
 
   const navigate = useNavigate()
 

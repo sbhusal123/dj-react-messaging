@@ -153,6 +153,7 @@ export default function Home() {
           navigate('/')
         }
     }
+    setNewMessage("")
   };
 
   useEffect(() => {

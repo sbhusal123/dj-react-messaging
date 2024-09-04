@@ -1,21 +1,22 @@
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 import Storage from '../services/Storage'
 import useToast from "../hooks/useToast";
 import AuthService from "../services/authService";
+import ChatService from "../services/chatService";
+
+
 
 const WS_URL = "ws://localhost:8000/ws/chat/"
 
 export default function Home() {
-  const [messages, setMessages] = useState([
-    { user: 'John', text: 'Hello!', time: '10:00 AM', id: 1 },
-    { user: 'Jane', text: 'Hi John!', time: '10:01 AM', id: 2 },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [filteredMessages, setFilteredMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [username, setUsername] = useState('John');
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { toastInfo, toastError } = useToast()
 
@@ -27,6 +28,27 @@ export default function Home() {
     Storage.getRefreshToken()
   })
 
+  const loadMessages = async () => {
+    try {
+        const messageResponse = await ChatService.retrieveMessages()
+        setMessages(messageResponse.data)
+    } catch(err) {
+        if(err.status === 401){
+          try {
+              const token = await AuthService.refreshToken(refreshToken)
+              const newAccessToken = token.data.refresh
+              Storage.updateAccessToken(newAccessToken)
+              setAccessToken(accessToken)
+          } catch (err1){
+              toastError("Session Expired")
+              navigate('/')
+          }
+        }
+        toastError("Session Expired")
+        navigate('/')
+    }
+  }
+
   useEffect(() => {
     // const socket = new ReconnectingWebSocket(WS_URL + `?token=${accessToken}`)
     const socket = new WebSocket(WS_URL + `?token=${accessToken}`)
@@ -34,31 +56,39 @@ export default function Home() {
     socket.addEventListener('open', () => {
       console.log("Connection Established")
     })
+    loadMessages().then(() => {})
   }, [])
 
   const navigate = useNavigate()
 
   const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      setMessages([...messages, { user: username, text: newMessage, time }]);
-      setNewMessage('');
-    }
+    console.log("Sending message")
+    ChatService.sendMessage(newMessage).then((e) => {}).catch((error) => {
+      if(error.status === 401){
+        AuthService.refreshToken()
+      }
+    })
   };
 
-  const filteredMessages = messages.filter(message =>
-    message.text.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const filteredMsg = messages.filter(message => {
+      return message.message.toLowerCase().includes(searchTerm.toLowerCase())
+    });
+    setFilteredMessages(filteredMsg)
+  }, [searchTerm])
+
 
   const handleLogOUt = () => {
     const refreshToken = Storage.getRefreshToken()
-    AuthService.authLogout(refreshToken).then((response) => {
+    AuthService.authLogout().then((response) => {
       if(response.status === 200){
         toastInfo("Logged Out.")
         navigate('/')
         Storage.removeTokenData()
       }
     }).catch(e => {
+      navigate('/')
+      Storage.removeTokenData()
       toastError("Something went wrong.")
     })
 
@@ -74,14 +104,14 @@ export default function Home() {
                 type="text" 
                 className="w-full p-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
                 placeholder="Search messages..." 
-                value={searchTerm} 
+                value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
             </div>
 
             <div className="ml-10">
-              <button 
+              <button
                 className="bg-blue-400 px-5 py-2 text-white rounded-md hover:bg-white hover:text-blue-400 hover:border-blue-400"
                 onClick={handleLogOUt}
               >
@@ -92,11 +122,18 @@ export default function Home() {
         </div>
       </div>
       <div className="flex-0.9 overflow-y-auto bg-white p-4 rounded-lg shadow-md h-screen">
-        {filteredMessages.map((message) => (
+        {searchTerm !== ""  ? filteredMessages.map((message) => (
           <div key={message.id} className="mb-4 p-2 border-b-2 border-b-slate-300">
-            <div className="text-sm text-gray-600">{message.user} - {message.time}</div>
+            <div className="text-sm text-gray-600">{message.user.username} - {new Date(message.timestamp).toDateString()}</div>
             <div className="bg-blue-500 text-white p-2 rounded-lg inline-block">
-              {message.text}
+              {message.message}
+            </div>
+          </div>
+        )) : messages.map((message) => (
+          <div key={message.id} className="mb-4 p-2 border-b-2 border-b-slate-300">
+            <div className="text-sm text-gray-600">{message.user.username} - {new Date(message.timestamp).toDateString()}</div>
+            <div className="bg-blue-500 text-white p-2 rounded-lg inline-block">
+              {message.message}
             </div>
           </div>
         ))}
@@ -106,7 +143,7 @@ export default function Home() {
           type="text" 
           className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           placeholder="Type a message..." 
-          value={newMessage} 
+          value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
         />

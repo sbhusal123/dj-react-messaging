@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import useTokenRefresh from "../hooks/useTokenRefresh"
 
 import {useNavigate} from 'react-router-dom'
 
@@ -8,7 +7,6 @@ const SOCKET_BASE_PATH = "ws://localhost:8000/ws/chat/"
 
 export default function SocketTest(){
 
-    const {accessToken, handleTokenCheck, isLoading : isTokenBeingChecked} = useTokenRefresh()
 
     const redirect = useNavigate()
 
@@ -19,10 +17,6 @@ export default function SocketTest(){
     const handleMessageRecieve = (event) => {
         console.log(event)
     }
- 
-    useEffect(() => {
-        handleTokenCheck()
-    }, [])
 
     useEffect(() => {
         if(isTokenBeingChecked){

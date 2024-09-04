@@ -11,12 +11,12 @@ export default function useTokenCheck(){
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
-  const { toastError } = useToast()
-
   const navigate = useNavigate()
+  const {toastError} = useToast()
 
   const validateToken = useCallback(() => {
       const accessToken = Storage.getAccessToken();
+      const refreshToken = Storage.getRefreshToken();
 
       if(!accessToken){
           navigate('/')
@@ -29,7 +29,26 @@ export default function useTokenCheck(){
           navigate('/chat')
           setLoading(false)
       }).catch(err => {
-          console.log("errror", err)
+          if(err.status === 401){
+              AuthService.refreshToken(refreshToken).then((resp) => {
+                  const newAccessToken = resp.data.access
+                  Storage.updateAccessToken(newAccessToken)
+                  setIsAuthenticated(true)
+                  setLoading(false)
+              }).catch((err) => {
+                  toastError("Session expired.")
+                  Storage.removeTokenData()
+                  setIsAuthenticated(false)
+                  setLoading(false)
+                  navigate('/')
+              })
+          } else {
+              toastError("Session expired.")
+              Storage.removeTokenData()
+              setIsAuthenticated(false)
+              setLoading(false)
+              navigate('/')
+          }
       })
 
   }, [])

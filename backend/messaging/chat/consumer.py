@@ -60,7 +60,14 @@ class ChatConsumer(AsyncConsumer, TokenValidationMixin):
                 "chat_room",
                 {
                     "type": "user_connected",
-                    "text": f"User {user.username} connected"
+                    "text": json.dumps({
+                        "type": "user_connect",
+                        "data": {
+                            "username": user.username,
+                            "email": user.email,
+                            "id": user.id,
+                        }
+                    })
                 }
             )
             await self.send({
@@ -96,7 +103,14 @@ class ChatConsumer(AsyncConsumer, TokenValidationMixin):
             "chat_room",
             {
                 "type": "user_disconnected",
-                "text": f"User {user.username} disconnected"
+                "text": json.dumps({
+                    "type": "user_disconnect",
+                    "data": {
+                        "username": user.username,
+                        "email": user.email,
+                        "id": user.id,
+                    }
+                })
             }
         )
         await self.channel_layer.group_discard(

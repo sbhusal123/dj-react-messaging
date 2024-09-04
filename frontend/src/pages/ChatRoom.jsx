@@ -8,9 +8,10 @@ import AuthService from "../services/authService";
 import ChatService from "../services/chatService";
 
 
-import moment from 'moment';
-
 import debounce from 'lodash/debounce';
+
+
+import moment from 'moment';
 
 
 
@@ -20,6 +21,8 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [filteredMessages, setFilteredMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+
+  const [isSocketConnectionEstablished, setSocketConnectionEstablished] = useState(false)
 
   const [prevPage, setPrevPage] = useState('')
 
@@ -39,13 +42,12 @@ export default function Home() {
       return Storage.getRefreshToken()
   })
 
-
-  const loadMessages = async (page='last', search='') => {
+  const loadMessages = useCallback(debounce(async (page='last') => {
     if(accessToken === undefined){
       return
     }
     try {
-        const messageResponse = await ChatService.retrieveMessages(page=page, search=search)
+        const messageResponse = await ChatService.retrieveMessages(page=page)
         if(page !== 'last'){
           setMessages((messages) => [...messageResponse.data.results, ...messages])
         } else {
@@ -59,7 +61,7 @@ export default function Home() {
               const newAccessToken = token.data.access
               Storage.updateAccessToken(newAccessToken)
               setAccessToken(accessToken)
-              await loadMessages(page=page. search=search)
+              await loadMessages(page=page)
           } catch (err1){
               console.log("Session expired::", err1)
               Storage.removeTokenData()
@@ -74,9 +76,7 @@ export default function Home() {
         }
 
     }
-  }
-
-  // const deboundedLoadMessage = 
+  }, 300), [])
 
   const handleSocketRecieve = (event) => {
     const incoming = JSON.parse(event.data);
@@ -103,10 +103,12 @@ export default function Home() {
 
   const handleSocketClose = (event) => {
     console.log("websocket close::",event)
+    setSocketConnectionEstablished(false)
   }
 
   const handleSocketOpen = (event) => {
     console.log("websocket open::",event)
+    setSocketConnectionEstablished(true)
   }
 
   const handleSocketError = (event) => {
@@ -169,14 +171,14 @@ export default function Home() {
         }
     }
     setNewMessage("")
-  }, 300), [])
+  }, 500), [newMessage]);
 
-  // useEffect(() => {
-  //   const filteredMsg = messages.filter(message => {
-  //     return message.message.toLowerCase().includes(searchTerm.toLowerCase())
-  //   });
-  //   setFilteredMessages(filteredMsg)
-  // }, [searchTerm])
+  useEffect(() => {
+    const filteredMsg = messages.filter(message => {
+      return message.message.toLowerCase().includes(searchTerm.toLowerCase())
+    });
+    setFilteredMessages(filteredMsg)
+  }, [searchTerm])
 
 
   const handleLogOUt = () => {
@@ -201,24 +203,24 @@ export default function Home() {
         <div className="relative w-full">
           <div className="flex sm:flex-row w-full">
           <div className="relative flex-0.8 w-4/5">
-          <input 
-            type="text" 
-            className="w-full p-2 pl-10 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            placeholder="Search messages..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          {searchTerm && (
-            <button
-              type="button" 
-              onClick={() => setSearchTerm('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            >
-              Clear
-            </button>
-          )}
-        </div>
+        <input 
+          type="text" 
+          className="w-full p-2 pl-10 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          placeholder="Search messages..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        {searchTerm && (
+          <button 
+            type="button" 
+            onClick={() => setSearchTerm('')}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            Clear
+          </button>
+        )}
+      </div>
 
             <div className="ml-10">
               <button
@@ -272,9 +274,10 @@ export default function Home() {
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
         />
-        <button 
-          className="mt-2 w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+        <button
+          className="mt-2 w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-slate-600"
           onClick={handleSendMessage}
+          disabled={!isSocketConnectionEstablished}
         >
           Send
         </button>

@@ -2,7 +2,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from datetime import timedelta
 
-from rest_framework import mixins
 from rest_framework import viewsets
 
 from .serializers import ChatMessageSerializer
@@ -14,6 +13,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from .permissions import IsOwnerOrReadOnly
+
+from core.pagination import ChatMessagePagination
 
 class RememberMeTokenView(TokenObtainPairView):
 
@@ -36,11 +37,16 @@ class RememberMeTokenView(TokenObtainPairView):
 class ChatMessageViewSet(viewsets.ModelViewSet):
     serializer_class = ChatMessageSerializer
 
-    queryset = ChatMessages.objects.all()
+    queryset = ChatMessages.objects.order_by('timestamp')
 
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
+    pagination_class = ChatMessagePagination
+
+    def get_queryset(self):
+        search_string = self.request.GET.get('message')
+        return super().get_queryset()
 
     def perform_create(self, serializer):
         user = self.request.user

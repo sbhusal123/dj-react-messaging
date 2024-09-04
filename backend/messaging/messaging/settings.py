@@ -30,7 +30,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    # TODO: to be replaced with channels: runworker: https://channels.readthedocs.io/en/latest/installation.html
     'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,13 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # libs
-    "corsheaders",
-    'rest_framework',
-
     # custom apps
     'chat',
 
+    # libs
+    "corsheaders",
+    'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
 ]
 
@@ -121,7 +119,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
         },
     },
 }

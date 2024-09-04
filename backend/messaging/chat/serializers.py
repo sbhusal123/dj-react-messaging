@@ -40,7 +40,7 @@ class ChatMessageSerializer(ModelSerializer):
         }
 
         async_to_sync(get_channel_layer().group_send)("chat_room",{
-            'type': 'chat_message',
+            'type': 'send_message',
             'text': json.dumps({
                 "type": "chat_message",
                 "data": message_data

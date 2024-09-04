@@ -28,6 +28,7 @@ const Login = () => {
       AuthService.authLogin(username, password, remember).then(resp => {
           if(resp.status === 200){
               const data = resp.data
+              Storage.setUsername(username)
               Storage.storeTokens(data)
               toastInfo("Logged In")
               navigate('/chat')

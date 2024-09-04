@@ -1,5 +1,13 @@
 export default class Storage {
 
+    static setUsername(username){
+        localStorage.setItem("@username", username)
+    }
+
+    static getUsername(){
+        return localStorage.getItem("@username")
+    }
+
     static storeTokens(data){
         localStorage.setItem("@accessToken", data.access)
         localStorage.setItem("@refreshToken", data.refresh)

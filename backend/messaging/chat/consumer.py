@@ -59,7 +59,7 @@ class ChatConsumer(AsyncConsumer, TokenValidationMixin):
             await self.channel_layer.group_send(
                 "chat_room",
                 {
-                    "type": "user_connected",
+                    "type": "send_message",
                     "text": json.dumps({
                         "type": "user_connect",
                         "data": {
@@ -74,35 +74,19 @@ class ChatConsumer(AsyncConsumer, TokenValidationMixin):
                 'type': 'websocket.accept'
             })
 
-    async def chat_message(self, event):
+    async def send_message(self, event):
         message = event["text"]
         await self.send({
             "type": "websocket.send",
             "text": message
         })
 
-
-    async def user_disconnected(self, event):
-        text = event['text']
-        await self.send({
-            "type": "websocket.send",
-            "text": text
-        })
-
-    async def user_connected(self, event):
-        text = event['text']
-        await self.send({
-            "type": "websocket.send",
-            "text": text
-        })
-
     async def websocket_disconnect(self, event):
-        print("Websocket Disconnected...", event)
         user = self.scope["user"]
         await self.channel_layer.group_send(
             "chat_room",
             {
-                "type": "user_disconnected",
+                "type": "send_message",
                 "text": json.dumps({
                     "type": "user_disconnect",
                     "data": {

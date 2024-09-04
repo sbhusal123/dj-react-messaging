@@ -36,6 +36,7 @@ export default function useTokenCheck(){
                   setIsAuthenticated(true)
                   setLoading(false)
               }).catch((err) => {
+                  console.log("Session expired")
                   toastError("Session expired.")
                   Storage.removeTokenData()
                   setIsAuthenticated(false)
@@ -43,6 +44,7 @@ export default function useTokenCheck(){
                   navigate('/')
               })
           } else {
+                console.log("Session expired")
               toastError("Session expired.")
               Storage.removeTokenData()
               setIsAuthenticated(false)

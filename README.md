@@ -13,6 +13,32 @@ python=3.12.3
 node-20.16
 ```
 
+## Directory Structure:
+
+```sh
+├── backend (Backend Project)
+│   ├── Dockerfile
+│   ├── env
+│   ├── messaging
+│   ├── requirements.txt
+│   └── start_backend.sh
+├── frontend (Frontend Project)
+│   ├── Dockerfile
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── public
+│   ├── README.md
+│   ├── src
+│   ├── start_frontend.sh
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+│   └── yarn.lock
+├── docker-compose.yml
+```
+
 ## Runing a Project:
 
 > docker compose up

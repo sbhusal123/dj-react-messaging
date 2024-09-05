@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from rest_framework import viewsets
 
-from .serializers import ChatMessageSerializer
+from .serializers import ChatMessageSerializer, RegisterSerializer
 
 from .models import ChatMessages
 
@@ -32,6 +32,16 @@ class RememberMeTokenView(TokenObtainPairView):
                 
                 response.data['refresh'] = str(refresh)
         return response
+
+
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import CreateModelMixin
+
+from django.contrib.auth.models import User
+
+class RegisterViewSet(CreateModelMixin, GenericViewSet):
+    serializer_class = RegisterSerializer
+    queryset = User.objects.all()
 
 
 class ChatMessageViewSet(viewsets.ModelViewSet):

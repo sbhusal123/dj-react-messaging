@@ -8,10 +8,11 @@ from rest_framework_simplejwt.views import (
     TokenBlacklistView
 )
 
-from .views import RememberMeTokenView, ChatMessageViewSet
+from .views import RememberMeTokenView, ChatMessageViewSet, RegisterViewSet
 
 router = DefaultRouter()
 router.register(r'api/messages', ChatMessageViewSet)
+router.register(r'api/register', RegisterViewSet)
 
 urlpatterns = [
     path('api/token/', RememberMeTokenView.as_view(), name='token_obtain_pair'),

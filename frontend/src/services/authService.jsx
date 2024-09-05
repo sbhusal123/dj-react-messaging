@@ -2,6 +2,13 @@ import api from "./api"
 
 export default class AuthService {
 
+    static registerUser(username, password){
+        return api.post('/register/', {
+            'username': username,
+            'password': password
+        })
+    }
+
     // returns refresh and access token
     static authLogin(username, password, remember){
         return api.post('/token/', {

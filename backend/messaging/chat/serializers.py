@@ -10,6 +10,16 @@ from asgiref.sync import async_to_sync
 
 import json
 
+
+class RegisterSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'id': {'read_only': True}
+        }
+
 class UserSerializer(ModelSerializer):
 
     class Meta:

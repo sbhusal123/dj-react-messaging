@@ -37,9 +37,6 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
-print("\n\n")
-print("ALLOWED_HOSTS", ALLOWED_HOSTS)
-print("\n\n")
 
 
 # Application definition

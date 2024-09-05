@@ -16,6 +16,10 @@ from .permissions import IsOwnerOrReadOnly
 
 from core.pagination import ChatMessagePagination
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import json
+
 class RememberMeTokenView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
@@ -61,6 +65,18 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
             qs = ChatMessages.objects.filter(message__icontains=search_string)
             return qs
         return super().get_queryset()
+    
+    def create(self, request, *args, **kwargs):
+        data =  super().create(request, *args, **kwargs)
+        async_to_sync(get_channel_layer().group_send)("chat_room",{
+            'type': 'send_message',
+            'text': json.dumps({
+                "type": "chat_message",
+                "data": data.data
+            })
+        })        
+        return data
+
 
 
     def perform_create(self, serializer):

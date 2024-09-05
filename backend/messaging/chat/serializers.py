@@ -4,12 +4,6 @@ from django.contrib.auth.models import User
 
 from .models import ChatMessages
 
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-
-
-import json
-
 
 class RegisterSerializer(ModelSerializer):
     class Meta:
@@ -48,14 +42,6 @@ class ChatMessageSerializer(ModelSerializer):
                 'id': instance.user.id
             }
         }
-
-        async_to_sync(get_channel_layer().group_send)("chat_room",{
-            'type': 'send_message',
-            'text': json.dumps({
-                "type": "chat_message",
-                "data": message_data
-            })
-        })
 
     def create(self, validated_data):
         instance =  super().create(validated_data)

@@ -9,7 +9,7 @@
 ## Versioning
 
 ```
-python=3.12.3
+python-3.12.3
 node-20.16
 ```
 

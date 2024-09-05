@@ -13,6 +13,14 @@ class RegisterSerializer(ModelSerializer):
             'password': {'write_only': True},
             'id': {'read_only': True}
         }
+    
+    def create(self, validated_data):
+        instance =  super().create(validated_data)
+        instance.set_password(validated_data['password'])
+        instance.is_active = True
+        instance.save()
+        return instance
+
 
 class UserSerializer(ModelSerializer):
 

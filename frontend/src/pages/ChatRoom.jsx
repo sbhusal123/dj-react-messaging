@@ -14,8 +14,7 @@ import debounce from 'lodash/debounce';
 import moment from 'moment';
 
 
-
-const WS_URL = "ws://localhost:8000/ws/chat/"
+const WS_URL = import.meta.env.VITE_WS_URL
 
 export default function Home() {
   const [messages, setMessages] = useState([]);
@@ -125,6 +124,7 @@ export default function Home() {
   }
 
   const handleSocketClose = (event) => {
+    // alert(`handleSocketClose:: ${JSON.stringify(event)}`)
     console.log("websocket close::",event)
     setSocketConnectionEstablished(false)
   }
@@ -135,6 +135,7 @@ export default function Home() {
   }
 
   const handleSocketError = (event) => {
+    // alert(`handleSocketError:: ${JSON.stringify(event)}`)
     console.log("websocket error::",event)
   }
 
@@ -142,7 +143,7 @@ export default function Home() {
     if(accessToken === undefined){
       return
     }
-    const socket = new ReconnectingWebSocket(WS_URL + `?token=${accessToken}`)
+    const socket = new ReconnectingWebSocket(WS_URL + `/ws/chat/?token=${accessToken}`)
 
     socket.addEventListener('open', handleSocketOpen)
     socket.addEventListener('message', handleSocketRecieve)

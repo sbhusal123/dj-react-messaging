@@ -1,19 +1,19 @@
 # Realtime Messaging
 
-## Stack:
+## 1. Stack:
 - Backend build with django Rest Framework
 - Frontend build with React
 - Redis as a channel layer mediator.
 - Sqlite DB as a backend database.
 
-## Versioning
+## 2. Versioning
 
 ```
 python-3.12.3
 node-20.16
 ```
 
-## Directory Structure:
+## 3. Directory Structure:
 
 ```sh
 ├── backend (Backend Project)
@@ -39,7 +39,68 @@ node-20.16
 ├── docker-compose.yml
 ```
 
-## Runing a Project:
+## 4. Runing a Project:
+
+### 4.1. Setting up Frontend Environment:
+
+Create `.env` file out of `.env.sample` file located inside `frontend`.
+
+**Sample .env for frontend**
+
+```sh
+# ip can be localhost or your machine's network ip
+# use $(hostname -I | awk '{print $1}') to get your assigned ip
+VITE_API_URL="http://<ip>:3000"
+```
+
+Basically ``VITE_API_URL`` this sets the API URL to be used in frontend.
+
+> **Note:** While accessing from mobile device, it needs to be the machine's IP.
+
+### 4.2. Setting up Backend Environment:
+
+Create `.env` file out of `.env.sample` file located inside `frontend`.
+
+**Sample .env for backend**
+
+```sh
+# use command below to generate secret key else
+# python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+SECRET_KEY='django-insecure-yc2!0fhcf$62ye(adp0btc45g3e7!)oys5r0rw+e82g=#u-ny='
+
+# set to redis if runing in docker, else 127.0.0.1
+REDIS_HOST="<redis/127.0.0.1>"
+
+REDIS_PORT="6379"
+
+# comma separated hosts list
+ALLOWED_HOSTS="localhost,127.0.0.1,<machine-ip>"
+
+# comma separated origins
+# http://<machine-ip>:3000
+CORS_ALLOWED_ORIGINS="http://localhost:3000,http://127.0.0.1:3000,http://<machine-ip>:3000"
+```
+
+For a local setup,``REDIS_HOST``  should be set to ``localhost`` while on a dockerized setup it should be ``redis``.
+
+## 5. Runing Application Locally
+
+### 5.1. Local Setup For Backend:
+
+> Make sure you have a redis installed on your system if runing locally.
+
+- **Change directory to Backend:** ``cd backend``
+
+- **Create a python environment:** ``python3 -m venv env``
+
+- **Activate virtual environment:** ``source env/bin/activate``
+
+- **Install required packages:** ``pip install -r requirements.txt``
+
+- **Cd into messaging:** ``cd messaging/``
+
+- **Migrate and run server:** ``python manage.py migrate && python manage.py runserver 0.0.0.0:8000``
+
 
 > docker compose up
 

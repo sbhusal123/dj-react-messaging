@@ -214,8 +214,9 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen p-6 bg-gray-100">
-      <div className="flex-0.2 bg-white px-5 flex items-center">
+    <div className="flex flex-col h-screen p-6 bg-gray-100 relative">
+      <p className="text-white text-md left-8 absolute top-1 bg-blue-400 px-4 rounded-md">Hi, {username}</p>
+      <div className="flex-0.2 px-5 flex items-center mt-2">
         <div className="relative w-full">
           <div className="flex sm:flex-row w-full">
           <div className="relative flex-0.8 w-4/5">

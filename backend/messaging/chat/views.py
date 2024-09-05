@@ -45,8 +45,13 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
     pagination_class = ChatMessagePagination
 
     def get_queryset(self):
-        search_string = self.request.GET.get('message')
+        search_string = self.request.GET.get('message', None)
+        if search_string or search_string == '':
+            
+            qs = ChatMessages.objects.filter(message__icontains=search_string)
+            return qs
         return super().get_queryset()
+
 
     def perform_create(self, serializer):
         user = self.request.user

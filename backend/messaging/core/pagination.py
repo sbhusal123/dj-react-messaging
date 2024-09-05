@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 
 class ChatMessagePagination(PageNumberPagination):
-    page_size = 20
+    page_size = 2
 
     def get_paginated_response(self, data):
         return Response({

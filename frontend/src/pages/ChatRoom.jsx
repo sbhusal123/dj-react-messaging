@@ -25,6 +25,7 @@ export default function Home() {
   const [isSocketConnectionEstablished, setSocketConnectionEstablished] = useState(false)
 
   const [prevPage, setPrevPage] = useState('')
+  const [searchPage, setSearchPage] = useState('')
 
   const messagesEndRef = useRef(null);
 
@@ -42,18 +43,33 @@ export default function Home() {
       return Storage.getRefreshToken()
   })
 
-  const loadMessages = useCallback(debounce(async (page='last') => {
+  const loadMessages = useCallback(debounce(async (page='last', search='') => {
     if(accessToken === undefined){
       return
     }
     try {
-        const messageResponse = await ChatService.retrieveMessages(page=page)
-        if(page !== 'last'){
-          setMessages((messages) => [...messageResponse.data.results, ...messages])
+        const messageResponse = await ChatService.retrieveMessages(page, search)
+
+        // if its a last page in pagination
+        if(page === 'last'){
+            if(search !== ''){
+              setFilteredMessages(messageResponse.data.results)
+              setSearchPage(messageResponse.data.previous)
+            } else {
+              setMessages(messageResponse.data.results)
+              setPrevPage(messageResponse.data.previous)
+            }
+
         } else {
-          setMessages(messageResponse.data.results)
+          if(search !== ''){
+            setFilteredMessages((messages) => [...messageResponse.data.results, ...messages])
+            setSearchPage(messageResponse.data.previous)
+          } else {
+            setMessages((messages) => [...messageResponse.data.results, ...messages])
+            setPrevPage(messageResponse.data.previous)
+          }
+
         }
-        setPrevPage(messageResponse.data.previous)
     } catch(err) {
         if(err.status === 401){
           try {
@@ -61,7 +77,7 @@ export default function Home() {
               const newAccessToken = token.data.access
               Storage.updateAccessToken(newAccessToken)
               setAccessToken(accessToken)
-              await loadMessages(page=page)
+              await loadMessages(page, search)
           } catch (err1){
               console.log("Session expired::", err1)
               Storage.removeTokenData()
@@ -77,6 +93,13 @@ export default function Home() {
 
     }
   }, 300), [])
+
+  useEffect(() => {
+    setFilteredMessages([])
+    if(searchTerm != ''){
+      loadMessages('last', searchTerm)
+    }
+  }, [searchTerm])  
 
   const handleSocketRecieve = (event) => {
     const incoming = JSON.parse(event.data);
@@ -173,13 +196,6 @@ export default function Home() {
     setNewMessage("")
   }, 500), [newMessage]);
 
-  useEffect(() => {
-    const filteredMsg = messages.filter(message => {
-      return message.message.toLowerCase().includes(searchTerm.toLowerCase())
-    });
-    setFilteredMessages(filteredMsg)
-  }, [searchTerm])
-
 
   const handleLogOUt = () => {
     const refreshToken = Storage.getRefreshToken()
@@ -208,7 +224,7 @@ export default function Home() {
           className="w-full p-2 pl-10 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
           placeholder="Search messages..." 
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {setSearchTerm(e.target.value.replace(/ /g,''))}}
         />
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
         {searchTerm && (
@@ -233,8 +249,10 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* pagination for chat history */}
       {
-        prevPage && (
+        (prevPage && searchTerm == '') && (
           <div  className="m-2">
               <p className="text-center px-2 py-4 bg-blue-500 text-white p-2 rounded-lg cursor-pointer" onClick={() => {
                 if(prevPage){
@@ -245,6 +263,21 @@ export default function Home() {
         )
       }
 
+      {/* pagination for search history */}
+      {
+        (searchPage && searchTerm != '') && (
+          <div  className="m-2">
+              <p className="text-center px-2 py-4 bg-blue-500 text-white p-2 rounded-lg cursor-pointer" onClick={() => {
+                if(prevPage){
+                  loadMessages(searchPage, searchTerm)
+                }
+              }}>View More</p>
+          </div>
+        )
+      }
+
+
+      {searchTerm !== "" && (<p className="text-center">Search Result</p>)}
       <div className="flex-0.9 overflow-y-auto bg-white p-4 rounded-lg shadow-md h-screen">
         {searchTerm !== ""  ? filteredMessages.map((message) => (
           <div key={message.id} className="mb-4 p-2 border-b-2 border-b-slate-300">
@@ -268,16 +301,22 @@ export default function Home() {
       <div className="mt-4">
         <input
           type="text" 
-          className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-300"
           placeholder="Type a message..." 
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          disabled={searchTerm !== ''}
+          onKeyPress={(e) => {
+            if(searchTerm !== '') {
+              return
+            }
+            e.key === 'Enter' && handleSendMessage()
+          }}
         />
         <button
           className="mt-2 w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-slate-600"
           onClick={handleSendMessage}
-          disabled={!isSocketConnectionEstablished}
+          disabled={!isSocketConnectionEstablished || searchTerm !== ''}
         >
           Send
         </button>

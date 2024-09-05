@@ -9,8 +9,8 @@ export default class AuthService {
         })
     }
 
-    static retrieveMessages(page="last", search="") {
-        return api.get(`messages/?page=${page}${search !== "" ? "&search="+search : '' }`)
-    }
+    static retrieveMessages(page="last", message="") {
+        return api.get(`messages/?page=${page}&message=${message}`)
+    }    
 
 }

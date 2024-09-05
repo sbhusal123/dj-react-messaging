@@ -276,8 +276,6 @@ export default function Home() {
         )
       }
 
-
-      {searchTerm !== "" && (<p className="text-center">Search Result</p>)}
       <div className="flex-0.9 overflow-y-auto bg-white p-4 rounded-lg shadow-md h-screen">
         {searchTerm !== ""  ? filteredMessages.map((message) => (
           <div key={message.id} className="mb-4 p-2 border-b-2 border-b-slate-300">

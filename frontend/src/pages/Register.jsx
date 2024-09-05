@@ -27,7 +27,8 @@ export default function Register(){
             return
         } else {
             if(password !== rePassword){
-                
+                toastError("Password Doesnt Match")
+                return
             } else {
                 AuthService.registerUser(username, password).then((data) => {
                     toastInfo("User created")

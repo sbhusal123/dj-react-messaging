@@ -6,7 +6,7 @@
 - **Redis** as a channel layer mediator.
 - **Sqlite DB** as a backend database.
 
-## 2. Versioning
+## 2. Versioning:
 
 ```
 python-3.12.3
@@ -53,9 +53,9 @@ Make sure you know your machine's host ip.
 ```
 
 
-### 4.1. Backend Configuratio:
+### 4.1. Backend Configuration:
 
-Create `.env` inside ``backend`` file with the content of ``backend/.env.sample``. Replace values as needed.
+Create `.env` inside ``backend`` with the content of ``backend/.env.sample``. Replace values as needed.
 
 **backend/.env.sample**
 ```sh
@@ -78,7 +78,7 @@ CORS_ALLOWED_ORIGINS="http://localhost:3000,http://127.0.0.1:3000,http://192.168
 
 ### 4.2. Frontend Configuratio:
 
-Create `.env` inside ``frontend`` file with the content of ``frontend/.env.sample``. Replace values as needed.
+Create `.env` inside ``frontend`` with the content of ``frontend/.env.sample``. Replace values as needed.
 
 
 **frontend/.env.sample**
@@ -102,7 +102,7 @@ VITE_WS_URL="ws://192.168.1.137:8000"
 
 # 5. Runing Application:
 
-We've a docker compose at the root level, and the associated Dockerfile with backend and frontend in the respective directories. All the entrypoints for runing backend and frontend are in respective directories. 
+We've a docker compose at the root level, and the associated Dockerfile for backend and frontend in the respective directories. All the entrypoints for runing backend and frontend are in respective directories. 
 
 So, simply runing ``docker compose up --build`` on root directory should spin up **backend**, **frontend**, **redis** containers.
 

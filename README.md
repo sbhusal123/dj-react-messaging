@@ -83,11 +83,13 @@ Create `.env` inside ``frontend`` with the content of ``frontend/.env.sample``. 
 
 **frontend/.env.sample**
 ```sh
+# URL can be http://localhost:8000 or http://17.0.0.01:8000 or http://<host_ip>:8000
+
 # api URL
-VITE_API_URL="http://<host_ip/localhost/127.0.0.1>:8000"
+VITE_API_URL="http://<URL>:8000"
 
 # websocket url
-VITE_WS_URL="ws://<host_ip/localhost/127.0.0.1>:8000"
+VITE_WS_URL="ws://<URL>:8000"
 ```
 
 Two environment variables here are associated with API URL and the web socket endpoint to be used on react frontend.

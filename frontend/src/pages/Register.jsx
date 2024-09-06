@@ -21,7 +21,7 @@ export default function Register(){
 
     const {toastError, toastInfo} = useToast()
   
-    const handleClick = () => {
+    const handleRegister = () => {
         if(username === "" || password === "" || rePassword === ""){
             toastError("Fields cannot be empty")
             return
@@ -87,6 +87,11 @@ export default function Register(){
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         value={rePassword}
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter'){
+                              handleRegister()
+                            }
+                        }}                        
                         onChange={(e) => setRePassword(e.target.value.replace(/ /g,''))}
                     />
                     <span className="absolute right-2 top-3 cursor-pointer">
@@ -99,7 +104,7 @@ export default function Register(){
             <button
               className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
               type="submit"
-              onClick={() => handleClick()}
+              onClick={() => handleRegister()}
             >
               Register
             </button>

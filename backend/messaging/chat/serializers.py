@@ -1,8 +1,62 @@
+from typing import Any, Dict
 from rest_framework.serializers import ModelSerializer
 
 from django.contrib.auth.models import User
 
 from .models import ChatMessages
+
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer as TknRefSerializer
+from rest_framework_simplejwt.serializers import TokenVerifySerializer as TknVerifySerializer
+from rest_framework_simplejwt.serializers import TokenBlacklistSerializer as TknBlackListSerializer
+
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+
+
+
+class TokenBlacklistSerializer(TknBlackListSerializer):
+    """Custom TokeBlackListSerializer to validate the existence of user"""
+
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, str]:
+        token = RefreshToken(attrs["refresh"])
+        user_id = token['user_id']
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise TokenError("User Doesnt Exist")
+        if not user.is_active:
+            raise TokenError("User Inactive")
+        return super().validate(attrs)
+
+
+class TokenRefreshSerializer(TknRefSerializer):
+    """Custom TokenRefreshSerializer to validate the existence of user"""
+
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, str]:
+        token = RefreshToken(attrs["refresh"])
+        user_id = token['user_id']
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise TokenError("User Doesnt Exists")
+        if not user.is_active:
+            raise TokenError("User Inactive")
+        return super().validate(attrs)
+
+
+class TokenVerifySerializer(TknVerifySerializer):
+    """Custom TokenVerifySerializer to validate the existence of user"""
+
+    def validate(self, attrs: Dict[str, None]) -> Dict[Any, Any]:
+        token = AccessToken(attrs["token"])
+        user_id = token['user_id']
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise TokenError("User Doesnt Exists")
+        if not user.is_active:
+            raise TokenError("User Inactive")
+        return super().validate(attrs)
 
 
 class RegisterSerializer(ModelSerializer):

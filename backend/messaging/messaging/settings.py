@@ -82,19 +82,14 @@ MIDDLEWARE = [
 
 from datetime import timedelta
 
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "chat.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "chat.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "chat.serializers.TokenBlacklistSerializer",
 }
 
 ROOT_URLCONF = 'messaging.urls'

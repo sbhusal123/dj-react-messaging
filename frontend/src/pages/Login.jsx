@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {useNavigate} from 'react-router-dom'
 import AuthService from "../services/authService";
@@ -23,7 +23,7 @@ const Login = () => {
   const [remember, setRemember] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleClick = () => {
+  const handleLogin = () => {
       if(username === "" || password === "") {
         toastInfo("Username and password cannot be empty.")
         return
@@ -74,6 +74,11 @@ const Login = () => {
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
             type={showPassword ? "text": "password"}
             placeholder="Password"
+            onKeyDown={(e) => {
+              if(e.key === 'Enter'){
+                handleLogin()
+              }
+            }}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
@@ -89,7 +94,7 @@ const Login = () => {
           <button
             className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
             type="submit"
-            onClick={() => handleClick()}
+            onClick={() => handleLogin()}
           >
             Login
           </button>

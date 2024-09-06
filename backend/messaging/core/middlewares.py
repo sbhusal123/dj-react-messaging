@@ -2,15 +2,12 @@ from urllib.parse import parse_qs
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
 
 from channels.auth import AuthMiddlewareStack
 from channels.db import database_sync_to_async
 from jwt import InvalidSignatureError, ExpiredSignatureError, DecodeError
 from jwt import decode as jwt_decode
-
-User = get_user_model()
 
 
 class JWTAuthMiddleware:
@@ -26,16 +23,11 @@ class JWTAuthMiddleware:
         close_old_connections()
         try:
             token = parse_qs(scope["query_string"].decode("utf8")).get('token', None)[0]
-            print(f"token:: {token}")
             data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             scope['user'] = await self.get_user(data['user_id'])
         except (TypeError, KeyError, InvalidSignatureError, ExpiredSignatureError, DecodeError) as e:
-
-            print(f"Error decoding token:: {e} {e.__class__}")
-            
             await send({
-                "type": "websocket.close",
-                "text": "asdasdasd"
+                "type": "websocket.close"
             })
             return
 
@@ -44,10 +36,14 @@ class JWTAuthMiddleware:
     @database_sync_to_async
     def get_user(self, user_id):
         """Return the user based on user id."""
+        User = get_user_model()
         try:
-            return User.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
+            if not user.is_active:
+                raise InvalidSignatureError("User inactive")
+            return user
         except User.DoesNotExist:
-            return AnonymousUser()
+            raise InvalidSignatureError*("User Doesnt exist.")
 
 
 def JWTAuthMiddlewareStack(app):

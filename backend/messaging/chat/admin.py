@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import ChatMessages, ChatRoom
+from .models import ChatMessages
 
 
 admin.site.register(ChatMessages)
-admin.site.register(ChatRoom)
+
 

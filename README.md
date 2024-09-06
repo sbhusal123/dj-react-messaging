@@ -83,7 +83,7 @@ Create `.env` inside ``frontend`` with the content of ``frontend/.env.sample``. 
 
 **frontend/.env.sample**
 ```sh
-# URL can be http://localhost:8000 or http://17.0.0.01:8000 or http://<host_ip>:8000
+# URL can be http://localhost:8000 or http://127.0.0.1:8000 or http://<host_ip>:8000
 
 # api URL
 VITE_API_URL="http://<URL>:8000"

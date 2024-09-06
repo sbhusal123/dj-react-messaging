@@ -38,26 +38,17 @@ class JWTAuthMiddleware:
                 "text": "asdasdasd"
             })
             return
-        
-        if type(scope['user']) == AnonymousUser:
-            print(f"Anonymous user disconnected....")
-            await send({
-                "type": "websocket.close",
-                "text": "asdasdasd"
-            })
-            return
-        else:
-            return await self.app(scope, receive, send)
+
+        return await self.app(scope, receive, send)
 
     @database_sync_to_async
     def get_user(self, user_id):
         """Return the user based on user id."""
         try:
-            user =  User.objects.get(id=user_id)
-            if user.is_active:
-                return AnonymousUser()
+            return User.objects.get(id=user_id)
         except User.DoesNotExist:
             return AnonymousUser()
+
 
 def JWTAuthMiddlewareStack(app):
     """This function wrap channels authentication stack with JWTAuthMiddleware."""

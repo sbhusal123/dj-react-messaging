@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaEye } from "react-icons/fa"
+import { FaEye, FaEyeSlash } from "react-icons/fa"
 
 import { useNavigate } from 'react-router-dom'
 
@@ -48,9 +48,9 @@ export default function Register(){
     }
   
     return (
-      <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0">
+      <section className="h-screen flex flex-col md:flex-row justify-center space-y-10 md:space-y-0 md:space-x-16 items-center my-2 mx-5 md:mx-0 md:my-0 select-none">
         <div className="md:w-1/3 max-w-sm">
-        <p className="text-center text-blue-500 text-xl mb-5">Register</p>
+        <p className="text-center text-blue-500 text-2xl font-bold mb-5">Register</p>
 
             <div className="my-4">
                 <span className="text-left text-blue-400">Username</span>
@@ -74,7 +74,11 @@ export default function Register(){
                         onChange={(e) => setPassword(e.target.value.replace(/ /g,''))}
                     />
                     <span className="absolute right-2 top-3 cursor-pointer">
-                    <FaEye onClick={(val) => setShowPassword(!showPassword)}/>
+                    {
+                        showPassword ? 
+                        <FaEyeSlash onClick={(val) => setShowPassword(!showPassword)}/> : 
+                        <FaEye onClick={(val) => setShowPassword(!showPassword)}/>
+                    }
                     </span>
                 </div>
             </div>
@@ -95,30 +99,35 @@ export default function Register(){
                         onChange={(e) => setRePassword(e.target.value.replace(/ /g,''))}
                     />
                     <span className="absolute right-2 top-3 cursor-pointer">
-                        <FaEye onClick={(val) => setShowPassword(!showPassword)}/>
+                    {
+                        showPassword ? <FaEyeSlash onClick={(val) => setShowPassword(!showPassword)}/> : <FaEye onClick={(val) => setShowPassword(!showPassword)}/>
+                    }
                     </span>
                 </div>
         </div>
-          
-          <div className="text-center md:text-left">
-            <button
-              className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
-              type="submit"
-              onClick={() => handleRegister()}
-            >
-              Register
-            </button>
-          </div>
 
-          <div className="text-center md:text-left">
-            <button
-              className="mt-4 bg-green-600 hover:bg-green-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
-              type="submit"
-              onClick={() => navigate('/')}
-            >
-              Back To Login
-            </button>
-          </div>          
+        <div className="flex flex-row justify-between">
+            <div>
+                <button
+                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+                type="submit"
+                onClick={() => handleRegister()}
+                >
+                Register
+                </button>
+            </div>
+
+            <div>
+                <button
+                className="bg-green-600 hover:bg-green-700 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+                type="submit"
+                onClick={() => navigate('/')}
+                >
+                    Back To Login
+                </button>
+            </div> 
+        </div>
+          
         </div>
       </section>
     );

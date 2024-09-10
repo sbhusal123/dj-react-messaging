@@ -14,6 +14,8 @@ from pathlib import Path
 
 import os
 
+from datetime import timedelta
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -80,12 +82,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-from datetime import timedelta
+TTL_ACCESS_TOKEN = int(os.environ.get('TTL_ACCESS_TOKEN', '300'))
+TTL_REFRESH_TOKEN = int(os.environ.get('TTL_REFRESH_TOKEN', '18000'))
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=TTL_ACCESS_TOKEN),
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=TTL_REFRESH_TOKEN),
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "chat.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "chat.serializers.TokenVerifySerializer",

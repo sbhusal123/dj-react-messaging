@@ -93,21 +93,8 @@ class ChatMessageSerializer(ModelSerializer):
             'user': {'read_only': True}
         }
 
-    def broadcast_message_to_channel(self, instance):
-        message_data = {
-            'id': instance.id,
-            'message': instance.message,
-            'timestamp': instance.timestamp.isoformat(),
-            'user': {
-                'username': instance.user.username,
-                'email': instance.user.email,
-                'id': instance.user.id
-            }
-        }
-
     def create(self, validated_data):
         instance =  super().create(validated_data)
-        self.broadcast_message_to_channel(instance)
         return instance
 
     def to_representation(self, instance):

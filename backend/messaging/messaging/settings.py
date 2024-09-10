@@ -16,6 +16,8 @@ import os
 
 from datetime import timedelta
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-yc2!0fhcf$62ye(adp0btc45g3e7!)oys5r0rw+e82g=#u-ny='

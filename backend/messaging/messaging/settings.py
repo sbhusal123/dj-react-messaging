@@ -16,18 +16,6 @@ import os
 
 from datetime import timedelta
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-yc2!0fhcf$62ye(adp0btc45g3e7!)oys5r0rw+e82g=#u-ny='
@@ -35,7 +23,9 @@ SECRET_KEY = 'django-insecure-yc2!0fhcf$62ye(adp0btc45g3e7!)oys5r0rw+e82g=#u-ny=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -57,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS').split(',')
+
 
 CORS_ALLOW_METHODS = (
     "DELETE",

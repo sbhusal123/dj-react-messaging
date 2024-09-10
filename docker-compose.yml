@@ -6,6 +6,8 @@ services:
       - ./frontend:/app
     ports:
       - 3000:3000
+    depends_on:
+      - backend
 
   backend:
     build:

@@ -4,7 +4,7 @@
 echo "Installing yarn packages..."
 echo "Please wait untill completion.."
 
-yarn install
+yarn
 
 if [ $? -eq 0 ]; then
   echo "Yarn install completed successfully."

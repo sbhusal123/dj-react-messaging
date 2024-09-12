@@ -14,7 +14,7 @@ import debounce from 'lodash/debounce';
 import moment from 'moment';
 
 
-const WS_CHAT_URL = "ws://localhost:8000"
+const WS_CHAT_URL = import.meta.env.VITE_WS_URL;
 
 export default function Home() {
   const [messages, setMessages] = useState([]);

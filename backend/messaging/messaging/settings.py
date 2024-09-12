@@ -74,7 +74,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-TTL_ACCESS_TOKEN = int(os.environ.get('TTL_ACCESS_TOKEN', '300'))
+TTL_ACCESS_TOKEN = int(os.environ.get('TTL_ACCESS_TOKEN', '10'))
 TTL_REFRESH_TOKEN = int(os.environ.get('TTL_REFRESH_TOKEN', '18000'))
 
 

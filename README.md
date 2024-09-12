@@ -1,6 +1,27 @@
 ## Dj React Realtime Messaging:
 
+Create `frontend/.env` with the sample of `frontend/.env.sample`
+
+**frontend/.env.sample**
+
+```sh
+# api URL
+VITE_API_URL="http://<host_ip>:8000"
+
+# websocket url
+VITE_WS_URL="ws://<host_ip>:8000"
+```
+
+Your `frontend/.env` file should look like below:
+
+```sh
+VITE_API_URL="http://<host_ip>:8000"
+VITE_WS_URL="ws://<host_ip>:8000"
+```
+
+
 Runing application: ``docker compose up --build`` after this, wait till the completion of ``yarn`` inside docker container.
+
 
 > Packages Installation
 ```sh

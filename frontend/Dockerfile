@@ -4,4 +4,3 @@ WORKDIR /app
 
 COPY . /app
 
-CMD ["sh", "start_frontend.sh"]

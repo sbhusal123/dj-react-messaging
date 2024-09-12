@@ -6,5 +6,3 @@ COPY  . /app/
 
 RUN pip install -r requirements.txt
 
-
-CMD [ "sh", "start_backend.sh" ]

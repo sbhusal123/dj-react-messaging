@@ -4,6 +4,8 @@
 echo "Installing yarn packages..."
 echo "Please wait untill completion.."
 
+npm i -g yarn
+
 yarn
 
 if [ $? -eq 0 ]; then

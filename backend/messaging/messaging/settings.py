@@ -16,6 +16,10 @@ import os
 
 from datetime import timedelta
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -74,9 +78,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-TTL_ACCESS_TOKEN = int(os.environ.get('TTL_ACCESS_TOKEN', '10'))
-TTL_REFRESH_TOKEN = int(os.environ.get('TTL_REFRESH_TOKEN', '18000'))
-
+TTL_ACCESS_TOKEN = int(os.environ.get('TTL_ACCESS_TOKEN', '300'))
+TTL_REFRESH_TOKEN = int(os.environ.get('TTL_REFRESH_TOKEN', '3600'))
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=TTL_ACCESS_TOKEN),

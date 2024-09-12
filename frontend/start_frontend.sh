@@ -4,11 +4,9 @@
 echo "Installing yarn packages..."
 echo "Please wait untill completion.."
 
-npm i -g yarn
+yarn install
 
-yarn
-
-if [ $? -eq 0 ];
+if [ $? -eq 0 ]; then
   echo "Yarn install completed successfully."
 else
   echo "Yarn install failed."

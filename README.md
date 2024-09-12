@@ -42,18 +42,9 @@ TTL_REFRESH_TOKEN=3600
 
 Runing application: ``docker compose up --build`` after this, wait till the completion of ``yarn`` inside docker container.
 
-This should start the backend, frontend and redis containers. It might take a little while for node_modules to get installed properly.
+This should start the backend, frontend and redis containers. It might take a little while for node_modules to get installed properly inside frontend container.
 
 ```sh
- ✔ Network dj-react-messaging_default       Created                                                                                                      0.1s 
- ✔ Container redis-server                   Created                                                                                                      0.1s 
- ✔ Container dj-react-messaging-backend-1   Created                                                                                                      0.0s 
- ✔ Container dj-react-messaging-frontend-1  Created                                                                                                      0.0s 
-Attaching to backend-1, frontend-1, redis-server
-redis-server  | 1:C 12 Sep 2024 16:09:03.293 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
-redis-server  | 1:C 12 Sep 2024 16:09:03.293 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
-redis-server  | 1:C 12 Sep 2024 16:09:03.293 * Redis version=7.4.0, bits=64, commit=00000000, modified=0, pid=1, just started
-redis-server  | 1:C 12 Sep 2024 16:09:03.293 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
 redis-server  | 1:M 12 Sep 2024 16:09:03.295 * monotonic clock: POSIX clock_gettime
 redis-server  | 1:M 12 Sep 2024 16:09:03.297 * Running mode=standalone, port=6379.
 redis-server  | 1:M 12 Sep 2024 16:09:03.298 * Server initialized

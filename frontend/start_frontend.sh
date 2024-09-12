@@ -8,7 +8,7 @@ npm i -g yarn
 
 yarn
 
-if [ $? -eq 0 ]; then
+if [ $? -eq 0 ];
   echo "Yarn install completed successfully."
 else
   echo "Yarn install failed."

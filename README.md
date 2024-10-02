@@ -7,7 +7,7 @@ Create `frontend/.env` with the sample of `frontend/.env.sample`
 To get your host ip:
 
 ```sh
-hostname -I | awk '${print $1}'
+hostname -I | awk '{print $1}'
 
 192.168.1.32
 ```
